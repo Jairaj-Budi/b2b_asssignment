@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
-import { SupabaseService } from './supabase.service';
-import { SalesOrder } from '../models/sales-order.model';
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable, DestroyRef, inject } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { SalesOrder } from "../models/sales-order.model";
+import { Observable, EMPTY } from "rxjs";
+import { tap, catchError } from "rxjs/operators";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { API_URL } from "../config/api-config";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SalesOrderService {
-  constructor(private supabase: SupabaseService) {}
+  private destroyRef = inject(DestroyRef);
+
+  constructor(private http: HttpClient) {}
 
   getSalesOrders(filters?: {
     customerName?: string;
@@ -17,69 +21,64 @@ export class SalesOrderService {
     status?: string;
     orderDate?: Date;
   }): Observable<SalesOrder[]> {
-    let query = this.supabase.client
-      .from('sales_orders')
-      .select(`
-        *,
-        sales_order_items (
-          product_id,
-          quantity,
-          price
-        )
-      `)
-      .order('created_at', { ascending: false });
-
+    let params = new HttpParams();
     if (filters) {
       if (filters.customerName) {
-        query = query.ilike('customer_name', `%${filters.customerName}%`);
+        params = params.set("customerName", filters.customerName);
       }
       if (filters.customerEmail) {
-        query = query.ilike('customer_email', `%${filters.customerEmail}%`);
+        params = params.set("customerEmail", filters.customerEmail);
       }
       if (filters.customerMobile) {
-        query = query.ilike('customer_mobile', `%${filters.customerMobile}%`);
+        params = params.set("customerMobile", filters.customerMobile);
       }
       if (filters.status) {
-        query = query.eq('status', filters.status);
+        params = params.set("status", filters.status);
       }
       if (filters.orderDate) {
-        query = query.gte('order_date', filters.orderDate.toISOString());
+        params = params.set("orderDate", filters.orderDate.toISOString());
       }
     }
-
-    return from(query).pipe(
-      map(({ data }) => data as SalesOrder[])
-    );
+    return this.http
+      .get<SalesOrder[]>(`${API_URL}/sales_orders`, { params })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        catchError((err) => {
+          console.error("Error fetching sales orders:", err);
+          return EMPTY;
+        })
+      );
   }
 
-  createSalesOrder(order: Omit<SalesOrder, 'id' | 'created_at' | 'updated_at'>): Observable<SalesOrder> {
-    return from(
-      this.supabase.client
-        .from('sales_orders')
-        .insert([order])
-        .select()
-        .single()
-    ).pipe(
-      map(({ data }) => {
-        // Send order to third-party API
-        this.sendOrderToThirdParty(data as SalesOrder);
-        return data as SalesOrder;
+  createSalesOrder(
+    order: Omit<SalesOrder, "id" | "created_at" | "updated_at">
+  ): Observable<SalesOrder> {
+    return this.http.post<SalesOrder>(`${API_URL}/sales_orders`, order).pipe(
+      tap((createdOrder: SalesOrder) => {
+        // Send order to third-party API after successful order creation
+        this.sendOrderToThirdParty(createdOrder).subscribe();
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error("Error creating sales order:", err);
+        return EMPTY;
       })
     );
   }
 
-  private async sendOrderToThirdParty(order: SalesOrder): Promise<void> {
-    try {
-      await fetch('https://third-party-api.com/salesOrder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
-        },
-        body: JSON.stringify(order)
-      });
-    } catch (error) {
-      console.error('Failed to send order to third-party API:', error);
-    }
+  private sendOrderToThirdParty(order: SalesOrder): Observable<any> {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+    });
+    return this.http
+      .post("https://third-party-api.com/salesOrder", order, { headers })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        catchError((err) => {
+          console.error("Failed to send order to third-party API:", err);
+          return EMPTY;
+        })
+      );
   }
 }

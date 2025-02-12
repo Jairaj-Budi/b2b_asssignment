@@ -1,0 +1,25 @@
+<div class="home-page">
+    <!-- Hero Carousel Section -->
+    <section class="hero-carousel-section">
+        <app-hero-carousel></app-hero-carousel>
+    </section>
+
+    <!-- Cross-Sell Products Section -->
+    <section class="product-section">
+        <div class="container">
+            <h2>Featured Products</h2>
+            <div class="product-grid">
+                <!-- If products exist, display the first 4 -->
+                <ng-container *ngIf="products && products.length > 0; else noData">
+                    <div *ngFor="let product of products | slice:0:4; trackBy: trackByProduct" class="product-card">
+                        <h3>{{ product.name }}</h3>
+                        <p class="price">${{ product.price }}</p>
+                    </div>
+                </ng-container>
+                <ng-template #noData>
+                    <app-no-data></app-no-data>
+                </ng-template>
+            </div>
+        </div>
+    </section>
+</div>

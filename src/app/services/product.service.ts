@@ -1,71 +1,68 @@
-import { Injectable } from '@angular/core';
-import { SupabaseService } from './supabase.service';
-import { Product } from '../models/product.model';
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable, DestroyRef, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Product } from "../models/product.model";
+import { Observable, EMPTY } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { API_URL } from "../config/api-config";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ProductService {
-  constructor(private supabase: SupabaseService) {}
+  private destroyRef = inject(DestroyRef);
+
+  constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    return from(
-      this.supabase.client
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
-    ).pipe(
-      map(({ data }) => data as Product[])
+    return this.http.get<Product[]>(`${API_URL}/products`).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error("Error fetching products: ", err);
+        return EMPTY;
+      })
     );
   }
 
   getProduct(id: string): Observable<Product> {
-    return from(
-      this.supabase.client
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single()
-    ).pipe(
-      map(({ data }) => data as Product)
+    return this.http.get<Product>(`${API_URL}/products/${id}`).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error(`Error fetching product with id ${id}: `, err);
+        return EMPTY;
+      })
     );
   }
 
-  createProduct(product: Omit<Product, 'id' | 'created_at' | 'updated_at'>): Observable<Product> {
-    return from(
-      this.supabase.client
-        .from('products')
-        .insert([product])
-        .select()
-        .single()
-    ).pipe(
-      map(({ data }) => data as Product)
+  createProduct(
+    product: Omit<Product, "id" | "created_at" | "updated_at">
+  ): Observable<Product> {
+    return this.http.post<Product>(`${API_URL}/products`, product).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error("Error creating product:", err);
+        return EMPTY;
+      })
     );
   }
 
   updateProduct(id: string, product: Partial<Product>): Observable<Product> {
-    return from(
-      this.supabase.client
-        .from('products')
-        .update(product)
-        .eq('id', id)
-        .select()
-        .single()
-    ).pipe(
-      map(({ data }) => data as Product)
+    return this.http.put<Product>(`${API_URL}/products/${id}`, product).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error(`Error updating product with id ${id}: `, err);
+        return EMPTY;
+      })
     );
   }
 
   deleteProduct(id: string): Observable<void> {
-    return from(
-      this.supabase.client
-        .from('products')
-        .delete()
-        .eq('id', id)
-    ).pipe(
-      map(() => void 0)
+    return this.http.delete<void>(`${API_URL}/products/${id}`).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error(`Error deleting product with id ${id}: `, err);
+        return EMPTY;
+      })
     );
   }
 }

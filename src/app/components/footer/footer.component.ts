@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-footer',
+  selector: "app-footer",
   standalone: true,
   imports: [RouterModule, CommonModule],
   template: `
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
         <div class="footer-content">
           <div class="footer-section">
             <h3>Contact Us</h3>
-            <p>Email: contact@b2bsales.com</p>
+            <p>Email: contact&#64;b2bsales.com</p>
             <p>Phone: +1 (555) 123-4567</p>
             <p>Address: 123 Business St, Suite 100</p>
           </div>
@@ -31,6 +31,6 @@ import { CommonModule } from '@angular/common';
       </div>
     </footer>
   `,
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ["./footer.component.scss"],
 })
 export class FooterComponent {}
