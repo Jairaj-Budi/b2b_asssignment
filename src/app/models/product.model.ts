@@ -1,11 +1,11 @@
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   description: string;
-  price: number;
+  price: string;
   stock: number;
-  imageUrl?: string;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
   isInCart?: boolean;
-  created_at: Date;
-  updated_at: Date;
 }

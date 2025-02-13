@@ -18,18 +18,18 @@ export class ProductService {
 
   getProducts(): Observable<Product[]> {
     // Temporarily return mock data with artificial delay
-    return of(MOCK_PRODUCTS).pipe(
-      delay(800),
-      takeUntilDestroyed(this.destroyRef)
-    );
-
-    // return this.http.get<Product[]>(`${this.apiUrl}`).pipe(
-    //   takeUntilDestroyed(this.destroyRef),
-    //   catchError((err) => {
-    //     console.error("Error fetching products:", err);
-    //     return EMPTY;
-    //   })
+    // return of(MOCK_PRODUCTS).pipe(
+    //   delay(800),
+    //   takeUntilDestroyed(this.destroyRef)
     // );
+
+    return this.http.get<Product[]>(`${this.apiUrl}`).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((err) => {
+        console.error("Error fetching products:", err);
+        return EMPTY;
+      })
+    );
   }
 
   getProduct(id: string): Observable<Product> {

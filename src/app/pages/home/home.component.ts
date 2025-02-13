@@ -8,7 +8,7 @@ import { HeroCarouselComponent } from "../../shared_components/hero-carousel/her
 import { AddToCartModalComponent } from "../../shared_components/add-to-cart-modal/add-to-cart-modal.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { CartService } from "../../services/cart.service";
-import { ProductCardComponent } from '../../shared_components/product-card/product-card.component';
+import { ProductCardComponent } from "../../shared_components/product-card/product-card.component";
 
 @Component({
   selector: "app-home",
@@ -19,11 +19,11 @@ import { ProductCardComponent } from '../../shared_components/product-card/produ
     MatDialogModule,
     NoDataComponent,
     HeroCarouselComponent,
-    ProductCardComponent
+    ProductCardComponent,
   ],
   providers: [CartService],
   templateUrl: "./home.component.html",
-  styleUrls: ['./home.component.scss']
+  styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
   products: Product[] = [];
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
     private cartService: CartService
   ) {}
 
-  trackByProduct(index: number, product: Product): string {
+  trackByProduct(index: number, product: Product): number {
     return product.id;
   }
 
@@ -42,59 +42,59 @@ export class HomeComponent implements OnInit {
     console.log("HomeComponent loaded!");
     this.products = [
       {
-        id: "1",
-        name: "Product 1",
-        description: "Description 1",
-        price: 100,
-        stock: 10,
-        imageUrl: 'https://picsum.photos/400/300?random=1',
+        id: 1,
+        name: "Executive Laptop",
+        description:
+          "High-performance business laptop with 16GB RAM and 512GB SSD",
+        price: "1299.99",
+        stock: 50,
+        image_url: "https://picsum.photos/400/300?random=1",
         isInCart: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: "2025-02-13T05:43:10.715Z",
+        updated_at: "2025-02-13T05:43:10.715Z",
       },
       {
-        id: "2",
-        name: "Product 2",
-        description: "Description 2",
-        price: 200,
+        id: 2,
+        name: "Ergonomic Desk Chair",
+        description:
+          "Ergonomic office chair with lumbar support and adjustable height",
+        price: "299.99",
         stock: 20,
-        imageUrl: 'https://picsum.photos/400/300?random=2',
+        image_url: "https://picsum.photos/400/300?random=2",
         isInCart: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: "2025-02-13T05:43:10.715Z",
+        updated_at: "2025-02-13T05:43:10.715Z",
       },
       {
-        id: "3",
-        name: "Product 3",
-        description: "Description 3",
-        price: 300,
+        id: 3,
+        name: "Wireless Laser Printer",
+        description:
+          "Color laser printer with wireless connectivity and duplex printing",
+        price: "449.99",
         stock: 30,
-        imageUrl: 'https://picsum.photos/400/300?random=3',
+        image_url: "https://picsum.photos/400/300?random=3",
         isInCart: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: "2025-02-13T05:43:10.715Z",
+        updated_at: "2025-02-13T05:43:10.715Z",
       },
       {
-        id: "4",
-        name: "Product 4",
-        description: "Description 4",
-        price: 400,
+        id: 4,
+        name: "HD Conference Phone",
+        description: "HD voice quality conference phone with noise reduction",
+        price: "199.99",
         stock: 40,
-        imageUrl: 'https://picsum.photos/400/300?random=4',
+        image_url: "https://picsum.photos/400/300?random=4",
         isInCart: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: "2025-02-13T05:43:10.715Z",
+        updated_at: "2025-02-13T05:43:10.715Z",
       },
     ];
-    // this.productService
-    //   .getProducts()
-    //   .subscribe((products) => (this.products = products));
   }
 
   openAddToCartModal(product: any): void {
     const dialogRef = this.dialog.open(AddToCartModalComponent, {
-      width: '400px',
-      data: { product }
+      width: "400px",
+      data: { product },
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
@@ -106,7 +106,6 @@ export class HomeComponent implements OnInit {
 
   addToCart(product: any): void {
     product.isInCart = true;
-    // Call your cart service to add the product
     this.cartService.addToCart(product);
   }
 }

@@ -1,0 +1,17 @@
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore Angular build output directories
+/dist
+/out-tsc
+
+# IDE or Editor-specific folders
+/.idea
+.vscode
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/ 

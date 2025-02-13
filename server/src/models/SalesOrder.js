@@ -1,4 +1,5 @@
-const { Model } = require('objection');
+import { Model } from 'objection';
+import SalesOrderItem from './SalesOrderItem.js';
 
 class SalesOrder extends Model {
   static get tableName() {
@@ -6,7 +7,6 @@ class SalesOrder extends Model {
   }
 
   static get relationMappings() {
-    const SalesOrderItem = require('./SalesOrderItem');
     return {
       items: {
         relation: Model.HasManyRelation,
@@ -38,4 +38,4 @@ class SalesOrder extends Model {
   }
 }
 
-module.exports = SalesOrder; 
+export default SalesOrder; 

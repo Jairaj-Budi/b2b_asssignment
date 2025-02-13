@@ -1,0 +1,13 @@
+# Ignore Node.js dependency folder
+node_modules/
+
+# Ignore any local environment files with sensitive data
+.env
+
+# Ignore log files and temporary files
+logs/
+*.log
+tmp/
+
+# Ignore build output folder (if any)
+dist/ 

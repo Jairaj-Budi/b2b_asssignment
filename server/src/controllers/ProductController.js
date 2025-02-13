@@ -4,6 +4,7 @@ import { ValidationError } from 'objection';
 class ProductController {
   async getAllProducts(req, res) {
     try {
+      console.log('getAllProducts');
       const products = await ProductService.getAllProducts();
       res.json(products);
     } catch (error) {

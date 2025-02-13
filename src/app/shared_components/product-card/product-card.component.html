@@ -1,20 +1,17 @@
 <mat-card class="product-card">
   <div class="image-container">
-    <img mat-card-image 
-         [src]="product.imageUrl || '/assets/placeholder.png'" 
-         [alt]="product.name"
-         (error)="handleImageError($event)">
+    <img mat-card-image [src]="product.image_url || '/assets/placeholder.png'" [alt]="product.name"
+      (error)="handleImageError($event)">
   </div>
   <mat-card-content>
     <h2 class="product-title">{{ product.name }}</h2>
     <p class="description">{{ product.description }}</p>
-    <p class="price">₹{{ product.price.toFixed(2) }}</p>
+    <p class="price">₹{{ formatPrice(product.price) }}</p>
+    <p class="stock">In Stock: {{ product.stock }}</p>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button color="primary" 
-            [ngClass]="{'added': product.isInCart}"
-            (click)="onAddToCart()">
+    <button mat-raised-button color="primary" [ngClass]="{'added': product.isInCart}" (click)="onAddToCart()">
       {{ product.isInCart ? 'Added to Cart' : 'Add to Cart' }}
     </button>
   </mat-card-actions>
-</mat-card> 
+</mat-card>
