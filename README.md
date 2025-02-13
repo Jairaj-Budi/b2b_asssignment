@@ -7,7 +7,7 @@ A full-stack application for managing B2B sales operations, built with Angular, 
 ```
 ├── src/                    # Frontend Angular application
 │   ├── app/
-│   │   ├── components/     # Reusable UI components
+│   │   ├── shared_components/     # Reusable UI components
 │   │   ├── models/        # TypeScript interfaces
 │   │   ├── pages/         # Route components
 │   │   ├── services/      # Angular services
@@ -219,3 +219,7 @@ npm run test
 ## License
 
 MIT License
+
+
+
+ng add @angular/material

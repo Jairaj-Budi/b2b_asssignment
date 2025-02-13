@@ -13,7 +13,7 @@ import { CommonModule } from "@angular/common";
           <a routerLink="/" class="logo">B2B Sales</a>
           <div class="nav-links">
             <a
-              routerLink="/active"
+              routerLink="/"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }"
               >Home</a

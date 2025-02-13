@@ -1,10 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import productsRouter from './routes/products.js';
+import salesOrdersRouter from './routes/sales-orders.js';
+import './config/database.js'; // Import database configuration
 
 // Load environment variables
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,8 +16,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/products', require('./routes/products'));
-app.use('/api/sales-orders', require('./routes/sales-orders'));
+app.use('/api/products', productsRouter);
+app.use('/api/sales-orders', salesOrdersRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

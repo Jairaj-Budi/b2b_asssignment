@@ -1,31 +1,39 @@
 import { Injectable, DestroyRef, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Product } from "../models/product.model";
-import { Observable, EMPTY } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { Observable, EMPTY, of } from "rxjs";
+import { catchError, delay } from "rxjs/operators";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { API_URL } from "../config/api-config";
+import { MOCK_PRODUCTS } from "./mock-data";
 
 @Injectable({
   providedIn: "root",
 })
 export class ProductService {
   private destroyRef = inject(DestroyRef);
+  private apiUrl = `${API_URL}/api/products`;
 
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${API_URL}/products`).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      catchError((err) => {
-        console.error("Error fetching products: ", err);
-        return EMPTY;
-      })
+    // Temporarily return mock data with artificial delay
+    return of(MOCK_PRODUCTS).pipe(
+      delay(800),
+      takeUntilDestroyed(this.destroyRef)
     );
+
+    // return this.http.get<Product[]>(`${this.apiUrl}`).pipe(
+    //   takeUntilDestroyed(this.destroyRef),
+    //   catchError((err) => {
+    //     console.error("Error fetching products:", err);
+    //     return EMPTY;
+    //   })
+    // );
   }
 
   getProduct(id: string): Observable<Product> {
-    return this.http.get<Product>(`${API_URL}/products/${id}`).pipe(
+    return this.http.get<Product>(`${this.apiUrl}/${id}`).pipe(
       takeUntilDestroyed(this.destroyRef),
       catchError((err) => {
         console.error(`Error fetching product with id ${id}: `, err);
@@ -64,5 +72,12 @@ export class ProductService {
         return EMPTY;
       })
     );
+  }
+
+  addToCart(product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${product.id}`, {
+      ...product,
+      isInCart: true
+    });
   }
 }

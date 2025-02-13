@@ -13,8 +13,8 @@ import { CommonModule } from "@angular/common";
           <div class="footer-section">
             <h3>Contact Us</h3>
             <p>Email: contact&#64;b2bsales.com</p>
-            <p>Phone: +1 (555) 123-4567</p>
-            <p>Address: 123 Business St, Suite 100</p>
+            <p>Phone: +91 9876543210</p>
+            <p>Address: Anjaiah Nagar, Gachibowli, Hyderabad, Telangana</p>
           </div>
           <div class="footer-section">
             <h3>Quick Links</h3>
